@@ -1,8 +1,5 @@
-use axum::{extract::State, routing::get, Router, Server};
-use std::{
-    fmt::Write,
-    sync::{Arc, Mutex},
-};
+use axum::{extract::State, response::IntoResponse, routing::get, Json, Router, Server};
+use std::sync::{Arc, Mutex};
 use sysinfo::{CpuExt, System, SystemExt};
 
 #[tokio::main]
@@ -15,7 +12,7 @@ async fn main() {
         });
     let server = Server::bind(&"0.0.0.0:6969".parse().unwrap()).serve(router.into_make_service());
     let addr = server.local_addr();
-    println!("address {addr}");
+    println!("address @port {addr}");
     server.await.unwrap();
     println!("Hello, world!");
 }
@@ -24,16 +21,12 @@ struct AppState {
     sys: Arc<Mutex<System>>,
 }
 
-async fn cpu_get(State(state): State<AppState>) -> String {
-    let mut s = String::new();
+#[axum::debug_handler]
+async fn cpu_get(State(state): State<AppState>) -> impl IntoResponse {
     let mut sys = state.sys.lock().unwrap();
     sys.refresh_cpu();
-    for (i, cpu) in sys.cpus().iter().enumerate() {
-        let i = i + 1;
-        let usage = cpu.cpu_usage();
-        writeln!(&mut s, "CPU {i} {usage}%").unwrap();
-    }
-    s
+    let v: Vec<_> = sys.cpus().iter().map(|cpu| cpu.cpu_usage()).collect();
+    Json(v)
 }
 
 async fn root_get() -> &'static str {

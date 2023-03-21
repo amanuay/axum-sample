@@ -1,4 +1,6 @@
 use axum::{routing::get, Router, Server};
+use std::fmt::Write;
+use sysinfo::{CpuExt, System, SystemExt};
 
 #[tokio::main]
 async fn main() {
@@ -10,6 +12,14 @@ async fn main() {
     println!("Hello, world!");
 }
 
-async fn root_get() -> &'static str {
-    "Hi from axum!"
+async fn root_get() -> String {
+    let mut s = String::new();
+    let mut sys = System::new();
+    sys.refresh_cpu();
+    for (i, cpu) in sys.cpus().iter().enumerate() {
+        let i = i + 1;
+        let usage = cpu.cpu_usage();
+        writeln!(&mut s, "CPU {i} {usage}%").unwrap();
+    }
+    s
 }

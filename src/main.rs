@@ -1,4 +1,9 @@
-use axum::{extract::State, response::IntoResponse, routing::get, Json, Router, Server};
+use axum::{
+    extract::State,
+    response::{Html, IntoResponse},
+    routing::get,
+    Json, Router, Server,
+};
 use std::sync::{Arc, Mutex};
 use sysinfo::{CpuExt, System, SystemExt};
 
@@ -14,7 +19,7 @@ async fn main() {
     let addr = server.local_addr();
     println!("address @port {addr}");
     server.await.unwrap();
-    println!("Hello, world!");
+    println!("started axum server!");
 }
 #[derive(Clone)]
 struct AppState {
@@ -29,6 +34,7 @@ async fn cpu_get(State(state): State<AppState>) -> impl IntoResponse {
     Json(v)
 }
 
-async fn root_get() -> &'static str {
-    "hello axum!"
+async fn root_get() -> impl IntoResponse {
+    let html_file = tokio::fs::read_to_string("src/index.html").await.unwrap();
+    Html(html_file)
 }

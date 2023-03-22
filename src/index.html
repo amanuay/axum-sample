@@ -3,15 +3,22 @@
 
 <head>
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      setInterval(async () => {
+        let response = await fetch("/api/sysinfo");
+        if (response.status !== 200) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
+        let json = await response.json();
+
+        document.body.textContent = JSON.stringify(json, null, 2);
+      }, 200);
+    });
   </script>
   <style>
-    h1 {
-      font-family: sans-serif;
-    }
-
-    p {
-      font-family: sans-serif;
+    html {
+      font-family: Helvetica, sans-serif;
     }
   </style>
 
@@ -26,7 +33,6 @@
   </h1>
   <p>
     this is the body part.
-    can I add another line here?
   </p>
 </body>
 

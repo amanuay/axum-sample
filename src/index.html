@@ -4,6 +4,8 @@
 <head>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById('container');
+
       setInterval(async () => {
         let response = await fetch("/api/sysinfo");
         if (response.status !== 200) {
@@ -12,7 +14,16 @@
 
         let json = await response.json();
 
-        document.body.textContent = JSON.stringify(json, null, 2);
+        //document.body.textContent = JSON.stringify(json, null, 2);
+
+        container.textContent = '';
+
+        json.forEach(item => {
+          const block = document.createElement('div');
+          block.classList.add('block');
+          block.innerHTML = `<p>usage: ${item}</p>`;
+          container.appendChild(block);
+        });
       }, 200);
     });
   </script>
@@ -28,12 +39,8 @@
 </head>
 
 <body>
-  <h1>
-    This is a title
-  </h1>
-  <p>
-    this is the body part.
-  </p>
+  <div id="container">
+  </div>
 </body>
 
 </html>

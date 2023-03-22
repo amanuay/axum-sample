@@ -17,19 +17,70 @@
         //document.body.textContent = JSON.stringify(json, null, 2);
 
         container.textContent = '';
+        let i = 0;
 
         json.forEach(item => {
+          i = i + 1;
           const block = document.createElement('div');
           block.classList.add('block');
-          block.innerHTML = `<p>usage: ${item}</p>`;
+          block.innerHTML = `<div class = "block-inner" style = "width: ${item}%"></div>
+          <label> core ${i} usage: ${item.toFixed(2)}% </label>`;
           container.appendChild(block);
         });
       }, 200);
     });
   </script>
   <style>
-    html {
-      font-family: Helvetica, sans-serif;
+    @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+    * {
+      font-family: "Roboto", sans-serif;
+    }
+
+    h1 {
+      color: white;
+    }
+
+    body {
+      background: #0f0f0f;
+    }
+
+    .block {
+      background: #264653;
+      color: white;
+
+      width: 20em;
+      height: 2em;
+      margin: .5em;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      position: relative;
+    }
+
+    .block label {
+      z-index: 10;
+    }
+
+    .block .block-inner {
+      z-index: 5;
+
+      height: 100%;
+
+      background: #2A9D8F;
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+
+      transition: width 0.2s;
+    }
+
+    .block,
+    .block-inner {
+      border-radius: 4px;
     }
   </style>
 
@@ -39,6 +90,9 @@
 </head>
 
 <body>
+  <h1>
+    M1 cpu performance:
+  </h1>
   <div id="container">
   </div>
 </body>

@@ -17,9 +17,9 @@ async fn main() {
         });
     let server = Server::bind(&"0.0.0.0:6969".parse().unwrap()).serve(router.into_make_service());
     let addr = server.local_addr();
-    println!("address @port {addr}");
+    println!("Axum server running");
+    println!("Access server @port {addr}");
     server.await.unwrap();
-    println!("started axum server!");
 }
 #[derive(Clone)]
 struct AppState {
